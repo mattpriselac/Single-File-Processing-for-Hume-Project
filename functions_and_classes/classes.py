@@ -11,7 +11,24 @@ class Paper:
         self.nortonCites = []
         self.sbnCites = []
         self.rawParenthesesCapture = []
-        self.otherCites = []
+        self.tCites = []
+        self.pageNumCites = []
+        self.rawNortonScore = {}
+        self.rawSbnScore = {}
+        self.rawTScore = {}
+        self.rawPageNumScore = {}
+        self.a_l_p = {}
+        self.a_w_p = {}
+        self.s_l_p = {}
+        self.s_w_p = {}
+        self.totalStrictCites = 0
+        self.totalAggressiveCites = 0
+        self.s_w_c = {}
+        self.s_l_c = {}
+        self.a_w_c = {}
+        self.a_l_c = {}
+        self.biblio = {}
+
 
     def NortonSearch(self):
         citationCounter = 0 #citation counter to be used in numbering citations
@@ -24,19 +41,20 @@ class Paper:
 ##            Part. (capture both roman (capitalized and not) and arabic numerals)
 ##            Section (I left of the '.' here to be able to capture citations that are only Book.Part.Section with no paragraph citation)
 ##            optional .Paragraph(s with optional dash separator for a range of paragraphs
-        nortonPattern = re.compile("""  T*Abs\d+
-                                            ([-–—]\d{1,2}){0,1}|
-                                        T*App\d+
-                                            ([-–—]\d{1,2}){0,1}|
-                                        ((I{1,3}|[123])\.)
-                                        (([i]{1,3}|IV|[I]{1,3}|[1-4])\.)
-                                        (\d{1,2})
-                                        (\.[1-9]\d{0,2}
-                                            ([-–—]\d{1,2}){0,1}
-                                        ){0,1}""", re.X)
+        nortonPattern = re.compile("""  Abs\.*(tract)*§*\d+([-–—,]\d{1,2})*|
+                                        App\.*(endix)*§*\d+([-–—,]\d{1,2})*|
+                                        ((I{1,3}|[123]))
+                                        (\.([i]{1,3}|IV|[I]{1,3}|[1-4]))
+                                        (\.\d{1,2})
+                                        (
+                                            (\.)(?=\d{1,2})
+                                            \d{1,2}(?!\d)
+                                            ([-–—,]\d{1,2}(?!([\d]|(\.\d))))*
+                                        )*""", flags=re.X|re.I)
         #make the text of the paper accessible and generate the match objects
-        paper_to_search = open(self.name, "r")
-        text_to_search = paper_to_search.readline()
+        text_name = 'txts/'+self.name+'.txt'
+        paper_to_search = open(text_name, "r")
+        text_to_search = paper_to_search.read().strip().replace(' ','')
         paper_to_search.close()
         matchObjects = nortonPattern.finditer(text_to_search)
         #create a citation for each match object
@@ -62,8 +80,9 @@ class Paper:
                                     ([1-9]\d+|[xvi]+|[XVI]+)
                                     ([-–—,](\d+|[xvi]+|[XVI]+))*""", re.X)
         #make the text of the paper accessible and generate the match objects
-        paper_to_search = open(self.name, "r")
-        text_to_search = paper_to_search.readline()
+        text_name = 'txts/'+self.name+'.txt'
+        paper_to_search = open(text_name, "r")
+        text_to_search = paper_to_search.read().strip().replace(' ','')
         paper_to_search.close()
         matchObjects = sbnPattern.finditer(text_to_search)
         #create a citation for each match object
@@ -91,8 +110,9 @@ class Paper:
             #require a different search with a more restrictive start to the parentheses
         pattern = re.compile('\((T|THN|Treatise|Hume)*([A-Z]|[a-z]|[,.])*(p*\.{0,1}(\d{1,3}|[xvi]+|[XVI]+)([-–—,](\d+|[xvi]{1,5}|[XVI]{1,5}))*)\)')
         #make the text of the paper accessible and generate the match objects
-        paper_to_search = open(self.name, "r")
-        text_to_search = paper_to_search.readline()
+        text_name = 'txts/'+self.name+'.txt'
+        paper_to_search = open(text_name, "r")
+        text_to_search = paper_to_search.read().strip().replace(' ','')
         paper_to_search.close()
         matchObjects = pattern.finditer(text_to_search)
         #create a citation for each match object
@@ -106,100 +126,65 @@ class Paper:
         if len(self.rawParenthesesCapture) == 0:
             pass
 
-    def otherSearch(self, search_term):
-        citationCounter = 0 #citation counter to be used in numbering citations
-        #create the citation search object
-        pattern = re.compile(search_term)
-        #make the text of the paper accessible and generate the match objects
-        paper_to_search = open(self.name, "r")
-        text_to_search = paper_to_search.readline()
-        paper_to_search.close()
-        matchObjects = pattern.finditer(text_to_search)
-        #create a citation for each match object
-        for match in matchObjects:
-            citationCounter +=1
-            citationObject = Citation(self.name, citationCounter, match.group())
-            citationObject.startPoint = match.start()
-            citationObject.endPoint = match.end()
-            citationObject.search_term = match.re
-            self.otherCites.append(citationObject)
-        if len(self.otherCites) == 0:
-            pass
 
-    def calculate_raw_score_sheet(self):
-        #gather all the citations
-        master_citation_list = []
-        for citation in self.nortonCites:
-            master_citation_list.append(citation)
-        for citation in self.sbnCites:
-            master_citation_list.append(citation)
-        for citation in self.rawParenthesesCapture:
-            master_citation_list.append(citation)
-        for citation in self.otherCites:
-            master_citation_list.append(citation)
-
-        #turn each citation into a list of pairs
-        master_scoring_list = []
-        for citation in master_citation_list:
-            if citation.cleanedCitation != "":
-                try:
-                    for pair in uP(citation.cleanedCitation):
-                        #these pairs are (chapter, weight)
-                        master_scoring_list.append(pair)
-                except Exception as e:
-                    print(e)
-                    print(pair, "generated an error calculating raw_score_sheet while running through uP")
-                    pass
-
-        #create a blank scoring sheet:
-        score_sheet = {}
-        for para in treatise_paragraph_list:
-            score_sheet[para] = 0
-
-        #update score_sheet from master_score list
-        for pair in master_scoring_list:
-            try:
-                score_sheet[pair[0]] += pair[1]
-            except Exception as error:
-                print(error)
-                print(pair[0], 'generated a key error when trying to update the score sheet')
-                pass
-
-        return score_sheet
-
-    def make_csv_raw_score(self):
-        out_data = self.calculate_raw_score_sheet()
-        output_file = open('csvs/'+self.name[5:-4]+".csv", "w")
-        csv_writer = csv.writer(output_file)
-        for pair in out_data.items():
+    def a_l_p_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-a-l-p.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.a_l_p.items():
             csv_writer.writerow(pair)
-        output_file.close()
-        print('raw score sheet csv generated')
 
-    def relative_score_sheet(self):
-        raw_score = self.calculate_raw_score_sheet()
-        total_score = 0
-        for para in raw_score.keys():
-            if raw_score[para] > 0:
-                total_score += raw_score[para]
-        relative_score_sheet = {}
-        for para in raw_score.keys():
-            if raw_score[para] > 0:
-                relative_score = 100*round(raw_score[para]/total_score,5)
-                relative_score_sheet[para] = relative_score
-            else:
-                relative_score_sheet[para] = raw_score[para]
-
-        return relative_score_sheet
-
-    def make_csv_relative_score(self):
-        out_data = self.relative_score_sheet()
-        output_file = open('csvs/'+self.name[5:-4]+"-relative-score.csv", "w")
-        csv_writer = csv.writer(output_file)
-        for pair in out_data.items():
+    def a_w_p_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-a-w-p.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.a_w_p.items():
             csv_writer.writerow(pair)
-        output_file.close()
-        print('relative score sheet csv generated')
+
+    def s_l_p_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-s-l-p.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.s_l_p.items():
+            csv_writer.writerow(pair)
+
+    def s_w_p_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-s-w-p.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.s_w_p.items():
+            csv_writer.writerow(pair)
+
+    def a_l_c_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-a-l-c.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.a_l_c.items():
+            csv_writer.writerow(pair)
+
+    def a_w_c_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-a-w-c.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.a_w_c.items():
+            csv_writer.writerow(pair)
+
+    def s_l_c_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-s-l-c.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.s_l_c.items():
+            csv_writer.writerow(pair)
+
+    def s_w_c_CSV(self):
+        csv_file = open('csvs/'+self.name[5:-4]+'-s-w-c.csv', 'w')
+        csv_writer = csv.writer(csv_file)
+        for pair in self.s_w_c.items():
+            csv_writer.writerow(pair)
+
+    def csvScoreDump(self):
+        self.a_l_p_CSV()
+        self.a_w_p_CSV()
+        self.s_l_p_CSV()
+        self.s_w_p_CSV()
+        self.a_l_c_CSV()
+        self.a_w_c_CSV()
+        self.s_l_c_CSV()
+        self.s_w_c_CSV()
+        print('csvs dumped')
 
 class Citation:
     def __init__(self, paper_name, order_num, search_result):

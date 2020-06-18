@@ -1,0 +1,15 @@
+__pycache__/*
+.ipynb_checkpoints/*
+csvs/*
+pdfs/*
+similarity_scores/*
+txts/*
+jsons/*
+penelhum-chapters/*
+Some
+.DS_Store
+*.pdf
+*.csv
+*.xlsx
+*.txt
+*.rtf

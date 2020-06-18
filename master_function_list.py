@@ -144,6 +144,7 @@ def romanCleaner(cite_in):
     return cite_out
 
 def dotAppAdder(cite_in):
+    cite_in = cite_in.replace('§',"")
     appChecker = re.compile('(App(?![.|e]))|(Appendix)')
     if appChecker.search(cite_in):
         return re.sub(appChecker, 'App.', cite_in)
@@ -151,6 +152,7 @@ def dotAppAdder(cite_in):
         return cite_in
 
 def abstractCleaner(cite_in):
+    cite_in = cite_in.replace('§',"")
     absChecker = re.compile('(Abs\.)|(Abstract)')
     if absChecker.search(cite_in):
         return re.sub(absChecker, 'Abs', cite_in)

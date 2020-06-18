@@ -5,4 +5,5 @@ data/csvs/*.csv
 data/txts/*.txt
 data/jsons/*.json
 old_data/*
+old_function*
 .DS_Store

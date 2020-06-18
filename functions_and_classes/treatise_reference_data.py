@@ -1,8 +1,8 @@
 #load the files, just ensure these files are in the right directories
 #or make sure the directory is correct
 
-nToSdict = open("Norton to SBN Dictionary.txt", "r")
-sToNdict = open("SBN to Norton Dictionary.txt", "r")
+nToSdict = open("functions_and_classes/Norton to SBN Dictionary.txt", "r")
+sToNdict = open("functions_and_classes/SBN to Norton Dictionary.txt", "r")
 
 #create the dictionaries and lists
 norton_to_sbn_dictionary = {}

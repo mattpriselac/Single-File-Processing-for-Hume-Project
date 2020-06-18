@@ -1,8 +1,7 @@
 import re
 import roman
 import os
-from treatise_reference_data import *
-from classes import *
+from functions_and_classes.treatise_reference_data import *
 #ultimate Parsing and Scoring Functions
 # these functions take in either SBN or Norton citaitons of the following kind:
     # SBN it needs to be pure numbers or roman numerals

@@ -2,8 +2,7 @@ import re
 import roman
 import os
 import csv
-from treatise_reference_data import *
-from master_function_list import ultimateParser as uP
+from functions_and_classes.treatise_reference_data import *
 
 class Paper:
     def __init__(self, txt_file_name):

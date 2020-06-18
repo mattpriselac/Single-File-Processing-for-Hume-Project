@@ -1,7 +1,8 @@
 __pycache__/*
 .ipynb_checkpoints/*
 pdfs/*
-data/csvs/*
-data/txts/*
-data/jsons/*
+data/csvs/*.csv
+data/txts/*.txt
+data/jsons/*.json
+old_data/*
 .DS_Store

@@ -1,6 +1,14 @@
 import os
 import re
 import pandas as pd
+from functions_and_classes.classes import *
+from functions_and_classes.text_processing import ultimateParser as uP
+from data.biblio_data import dl_files
+
+#the takeaway from this set of functions is:
+#process_and_score_paper(filename, data_frame)
+#you'll need a file name and a data frame with bibliographic information to
+#pair the file name with
 
 
 
@@ -163,10 +171,10 @@ def biblioGenerator(filename, data_frame):
 def biblioSetter(paper_obj, data_frame):
     paper_obj.biblio = biblioGenerator(paper_obj.name, data_frame)
 
-def final_single_process(filename, data_frame):
+def process_and_score_paper(filename):
     paper = Paper(filename)
     processPaper(paper)
     paperScoreSetter(paper)
-    biblioSetter(paper, data_frame)
+    biblioSetter(paper, dl_files)
 
     return paper

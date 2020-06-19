@@ -1,4 +1,4 @@
-from classes import *
+from functions_and_classes.classes import *
 
 def p_to_dict(paper):
     od = {}

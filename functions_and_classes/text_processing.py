@@ -2,6 +2,9 @@ import re
 import roman
 import os
 from functions_and_classes.treatise_reference_data import *
+#Core takeaway from this set of functions is ultimateParser. Import it as uP
+
+
 #ultimate Parsing and Scoring Functions
 # these functions take in either SBN or Norton citaitons of the following kind:
     # SBN it needs to be pure numbers or roman numerals

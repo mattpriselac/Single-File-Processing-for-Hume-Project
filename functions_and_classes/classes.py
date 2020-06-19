@@ -51,7 +51,7 @@ class Paper:
                                             ([-–—,]\d{1,2}(?!([\d]|(\.\d))))*
                                         )*""", flags=re.X|re.I)
         #make the text of the paper accessible and generate the match objects
-        text_name = 'txts/'+self.name+'.txt'
+        text_name = 'data/txts/'+self.name+'.txt'
         paper_to_search = open(text_name, "r")
         text_to_search = paper_to_search.read().strip().replace(' ','')
         paper_to_search.close()
@@ -79,7 +79,7 @@ class Paper:
                                     ([1-9]\d+|[xvi]+|[XVI]+)
                                     ([-–—,](\d+|[xvi]+|[XVI]+))*""", re.X)
         #make the text of the paper accessible and generate the match objects
-        text_name = 'txts/'+self.name+'.txt'
+        text_name = 'data/txts/'+self.name+'.txt'
         paper_to_search = open(text_name, "r")
         text_to_search = paper_to_search.read().strip().replace(' ','')
         paper_to_search.close()
@@ -109,7 +109,7 @@ class Paper:
             #require a different search with a more restrictive start to the parentheses
         pattern = re.compile('\((T|THN|Treatise|Hume)*([A-Z]|[a-z]|[,.])*(p*\.{0,1}(\d{1,3}|[xvi]+|[XVI]+)([-–—,](\d+|[xvi]{1,5}|[XVI]{1,5}))*)\)')
         #make the text of the paper accessible and generate the match objects
-        text_name = 'txts/'+self.name+'.txt'
+        text_name = 'data/txts/'+self.name+'.txt'
         paper_to_search = open(text_name, "r")
         text_to_search = paper_to_search.read().strip().replace(' ','')
         paper_to_search.close()
@@ -127,49 +127,49 @@ class Paper:
 
 
     def a_l_p_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-a-l-p.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-a-l-p.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.a_l_p.items():
             csv_writer.writerow(pair)
 
     def a_w_p_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-a-w-p.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-a-w-p.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.a_w_p.items():
             csv_writer.writerow(pair)
 
     def s_l_p_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-s-l-p.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-s-l-p.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.s_l_p.items():
             csv_writer.writerow(pair)
 
     def s_w_p_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-s-w-p.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-s-w-p.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.s_w_p.items():
             csv_writer.writerow(pair)
 
     def a_l_c_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-a-l-c.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-a-l-c.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.a_l_c.items():
             csv_writer.writerow(pair)
 
     def a_w_c_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-a-w-c.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-a-w-c.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.a_w_c.items():
             csv_writer.writerow(pair)
 
     def s_l_c_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-s-l-c.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-s-l-c.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.s_l_c.items():
             csv_writer.writerow(pair)
 
     def s_w_c_CSV(self):
-        csv_file = open('csvs/'+self.name[5:-4]+'-s-w-c.csv', 'w')
+        csv_file = open('data/csvs/'+self.name+'-s-w-c.csv', 'w')
         csv_writer = csv.writer(csv_file)
         for pair in self.s_w_c.items():
             csv_writer.writerow(pair)
@@ -202,8 +202,8 @@ class Citation:
     #of the citation
     def FindPrecedingText(self, num_chars):
         #open the paper file
-        paper_file = open(self.paper, "r")
-        text_to_use = paper_file.readline()
+        paper_file = open('data/txts/'+self.paper+'.txt', "r")
+        text_to_use = paper_file.read()
         paper_file.close()
         #generate the buffer to get the appropriate slice in case it's around an edge of teh string
         buffer = self.startPoint - num_chars
@@ -218,8 +218,8 @@ class Citation:
     #this function pulls a given number of characters from the end of the citation going forward
     def FindTrailingText(self, num_chars):
         #open the paper file
-        paper_file = open(self.paper, "r")
-        text_to_use = paper_file.readline()
+        paper_file = open('data/txts/'+self.paper+'.txt', "r")
+        text_to_use = paper_file.read()
         paper_file.close()
         #generate the buffer to get the appropriate slice in case it's around an edge of the string
         buffer = len(text_to_use) - (self.endPoint + num_chars)

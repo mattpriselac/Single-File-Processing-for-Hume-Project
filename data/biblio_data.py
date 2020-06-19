@@ -1,6 +1,4 @@
 #generates the data frame with bibio info.
-
-
 import pandas as pd
 
 refs = pd.read_csv('data/List-of-Works.csv', header=0)

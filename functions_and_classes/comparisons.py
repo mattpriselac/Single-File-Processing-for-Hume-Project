@@ -1,4 +1,5 @@
 import pandas as pd
+import json
 from data import csv_dir, json_dir
 from data.csvs import csv_list
 from data.jsons import json_list
@@ -71,7 +72,7 @@ def updateALPcomps():
         for ind in a_l_p_comps.index:
             a_l_p_comps[column][ind] = df_col_similarity(a_l_p,column,ind)
     a_l_p_comps = pd.merge(a_l_p_comps, agg_df, left_index=True, right_index=True)
-    a_l_p_comps.to_csv('data/a_l_p_comp.csv'
+    a_l_p_comps.to_csv('data/a_l_p_comp.csv')
     print('Done updating a_l_p_comp.csv')
 
 

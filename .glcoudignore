@@ -1,0 +1,9 @@
+old_data/*
+old_functions/*
+pdfs/*
+.DS_Store
+.flaskenv
+.gitignore
+*.ipynb
+__pycache__/*
+.ipynb_checkpoints/*

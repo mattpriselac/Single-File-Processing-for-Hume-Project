@@ -1,0 +1,4 @@
+runtime: python37
+
+env_varialbes:
+  SECRET_KEY: 'adskgj*%$%SDFBbldav1879dhbdfh6'

@@ -3,7 +3,7 @@ import json
 from data import csv_dir, json_dir
 from data.csvs import csv_list
 from data.jsons import json_list
-from data import a_l_p_comp, a_l_c_comp, s_l_p_comp, s_l_c_comp
+from data import a_l_p_comp, a_l_c_comp, s_l_p_comp, s_l_c_comp, file_to_title_dict
 #This file has two categories of thigns worth importing for usage:
 #first is a function for generating comparisons:
 #article_comps(filename, min_num_cites=1, min_num_comps=100, a_or_s="a", p_or_c="p")
@@ -183,3 +183,21 @@ def article_comps(filename, min_num_cites=1, min_num_comps=100, a_or_s="a", p_or
             return print('be sure to choose "p" or "c" for the p_or_c argument')
     else:
         return print('be sure to choose "a" or "s" for the a_or_s argument')
+
+def generateCompData(df_in,filename):
+    count = df_in[filename].count()
+    out_list = []
+    for i in range(0,count):
+        file_comp_info = {}
+        file_comp_info['rank'] = i+1
+        file_comp_info['score'] = round(df_in.iloc[i][filename],3)
+        if df_in.iloc[i].name.strip() == "Literature":
+            file_comp_info['file'] = "Literature"
+            file_comp_info['title'] = "Literature"
+            file_comp_info['cites'] = df_in.iloc[i][df_in.columns[1]]
+        else:
+            file_comp_info['file'] = df_in.iloc[i].name.strip()
+            file_comp_info['title'] = file_to_title_dict[df_in.iloc[i].name.strip()]
+            file_comp_info['cites'] = int(df_in.iloc[i][df_in.columns[1]])
+        out_list.append(file_comp_info)
+    return out_list

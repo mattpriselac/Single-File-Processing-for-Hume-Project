@@ -7,7 +7,7 @@ import json
 from functions_and_classes.comparisons import article_comps as ac
 from data import file_to_title_dict
 from functions_and_classes.comparisons import generateCompData
-
+from functions_and_classes.display_only_ops import generateListOfCites
 
 
 @app.route('/')
@@ -32,25 +32,30 @@ def publication(identifier):
     if identifier == "Literature":
         return redirect('literature')
     else:
-        try:
-            pub_path =  basedir+'/data/jsons/'+identifier+'.json'
-            jfile = open(pub_path, 'r')
-            pub = p_from_dict(json.load(jfile))
-            jfile.close()
-            ppurl="https://philpapers.org/rec/"+identifier
-            df_sc = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='s')
-            sc_data = generateCompData(df_sc, identifier)
-            df_sp = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='s')
-            sp_data = generateCompData(df_sp, identifier)
-            df_ac = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='a')
-            ac_data = generateCompData(df_ac, identifier)
-            df_ap = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='a')
-            ap_data = generateCompData(df_ap, identifier)
+        #try:
+        pub_path =  basedir+'/data/jsons/'+identifier+'.json'
+        jfile = open(pub_path, 'r')
+        pub = p_from_dict(json.load(jfile))
+        jfile.close()
+        ppurl="https://philpapers.org/rec/"+identifier
+        df_sc = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='s')
+        sc_data = generateCompData(df_sc, identifier)
+        df_sp = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='s')
+        sp_data = generateCompData(df_sp, identifier)
+        df_ac = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='a')
+        ac_data = generateCompData(df_ac, identifier)
+        df_ap = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='a')
+        ap_data = generateCompData(df_ap, identifier)
 
-            return render_template('publication.html', pub=pub, title=pub.name, ppurl=ppurl, sc=sc_data, sp=sp_data, ac=ac_data, ap=ap_data)
+        swp = generateListOfCites(identifier, a_s="s", c_p="p")
+        swc = generateListOfCites(identifier, a_s="s", c_p="c")
+        awp = generateListOfCites(identifier, a_s="a", c_p="p")
+        awc = generateListOfCites(identifier, a_s="a", c_p="c")
 
-        except:
-            return render_template('no_such_file.html', title="Whoops!", filename=identifier)
+        return render_template('publication.html', pub=pub, title=pub.name, ppurl=ppurl, sc=sc_data, sp=sp_data, ac=ac_data, ap=ap_data, swp=swp, swc=swc, awp=awp, awc=awc)
+
+        #except:
+            #return render_template('no_such_file.html', title="Whoops!", filename=identifier)
 
 @app.route('/literature')
 def literature():

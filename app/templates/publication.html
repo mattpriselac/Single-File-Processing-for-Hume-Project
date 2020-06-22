@@ -27,6 +27,143 @@
 <div class="container my-3">
   <ul class="nav nav-tabs">
     <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#swp">Strict Paragraph Cites</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#swc">Strict Chapter Cites</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#awp">Aggressive Paragraph Cites</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#awc">Aggressive Chapter Cites</a>
+    </li>
+  </ul>
+  <div id="myTabContent" class="tab-content">
+
+    <div class="tab-pane fade active show" id="swp">
+      <div class='card bg-secondary'>
+        <h5 class='card-header'>Strict Search, Paragraph-level Citations</h5>
+        <div class='card-body'>
+          {% if pub.totalStrictCites > 0 %}
+          <div class="container-fluid overflow-auto" style="height:300px">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Paragraph</th>
+                <th scope="col">Citation Counts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for loc in swp %}
+              <tr class='table-light'>
+                <td> {{ loc[0] }}</td>
+                <td> {{ loc[1] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          {% else %}
+          <p>{pub.biblio['Title of Work']} yields no citations under strict search conditions</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="swc">
+      <div class='card bg-success'>
+        <h5 class='card-header'>Strict Search, Chapter-level Citations</h5>
+        <div class='card-body'>
+          {% if pub.totalStrictCites > 0 %}
+          <div class="container-fluid overflow-auto" style="height:300px">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Chapter</th>
+                <th scope="col">Citation Counts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for loc in swc %}
+              <tr class='table-light'>
+                <td> {{ loc[0] }}</td>
+                <td> {{ loc[1] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          {% else %}
+          <p>{pub.biblio['Title of Work']} yields no citations under strict search conditions</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="awp">
+      <div class='card bg-warning'>
+        <h5 class='card-header'>Aggressive Search, Paragraph-level Citations</h5>
+        <div class='card-body'>
+          {% if pub.totalAggressiveCites > 0 %}
+          <div class="container-fluid overflow-auto" style="height:300px">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Paragraph</th>
+                <th scope="col">Citation Counts</th>
+              </tr>
+            </thead>
+            <tbody class='overflow-auto' style="height:300px">
+              {% for loc in awp %}
+              <tr class='table-light'>
+                <td> {{ loc[0] }}</td>
+                <td> {{ loc[1] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          {% else %}
+          <p>{pub.biblio['Title of Work'] yields no citations under any search codntions</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="awc">
+      <div class='card bg-danger'>
+        <h5 class='card-header'>Aggressive Search, Chapter-level Citations</h5>
+        <div class='card-body'>
+          {% if pub.totalAggressiveCites > 0 %}
+          <div class="container-fluid overflow-auto" style="height:300px">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Chapter</th>
+                <th scope="col">Citation Counts</th>
+              </tr>
+            </thead>
+            <tbody class='overflow-auto' style="height:300px">
+              {% for loc in awc %}
+              <tr class='table-light'>
+                <td> {{ loc[0] }}</td>
+                <td> {{ loc[1] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          </div>
+          {% else %}
+          <p>{pub.biblio['Title of Work'] yields no citations under any search codntions</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="container my-3">
+  <ul class="nav nav-tabs">
+    <li class="nav-item">
       <a class="nav-link active" data-toggle="tab" href="#Strict-Paragraph">Strict Paragraph</a>
     </li>
     <li class="nav-item">
@@ -45,6 +182,7 @@
       <div class='card bg-secondary'>
         <h5 class='card-header'>Strict search, paragraph-level citation data</h5>
         <div class='card-body'>
+          <div class="container-fluid overflow-auto" style="height:300px">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -54,7 +192,7 @@
                 <th scope="col">Number of Citations in Comparison Article</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class='overflow-auto' style="height:300px">
               {% for art in sp %}
               <tr class='table-light'>
                 <th scope=row>{{ art['rank'] }}</th>
@@ -65,14 +203,15 @@
               {% endfor %}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>
-
     <div class="tab-pane fade" id="Strict-Chapter">
       <div class='card bg-success'>
         <h5 class='card-header'>Strict search, chapter-level citation data</h5>
         <div class='card-body'>
+          <div class="container-fluid overflow-auto" style="height:300px">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -82,7 +221,7 @@
                 <th scope="col">Number of Citations in Comparison Article</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class='overflow-auto' style="height:300px">
               {% for art in sc %}
               <tr class='table-light'>
                 <th scope=row>{{ art['rank'] }}</th>
@@ -94,13 +233,14 @@
             </tbody>
           </table>
         </div>
+        </div>
       </div>
     </div>
-
     <div class="tab-pane fade" id="Aggressive-Paragraph">
       <div class='card bg-warning'>
         <h5 class='card-header'>Aggressive search, paragraph-level citation data</h5>
         <div class='card-body'>
+          <div class="container-fluid overflow-auto" style="height:300px">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -110,7 +250,7 @@
                 <th scope="col">Number of Citations in Comparison Article</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class='overflow-auto' style="height:300px">
               {% for art in ap %}
               <tr class='table-light'>
                 <th scope=row>{{ art['rank'] }}</th>
@@ -121,14 +261,15 @@
               {% endfor %}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>
-
     <div class="tab-pane fade" id="Aggressive-Chapter">
       <div class='card bg-danger'>
         <h4 class='card-header'>Aggressive search, chapter-level citation data</h4>
         <div class='card-body'>
+          <div class="container-fluid overflow-auto" style="height:300px">
           <table class="table table-hover">
             <thead>
               <tr>
@@ -138,7 +279,7 @@
                 <th scope="col">Number of Citations in Comparison Article</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class='overflow-auto' style="height:300px">
               {% for art in ac %}
               <tr class='table-light'>
                 <th scope=row>{{ art['rank'] }}</th>
@@ -149,9 +290,11 @@
               {% endfor %}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 

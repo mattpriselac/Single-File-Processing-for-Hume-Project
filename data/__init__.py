@@ -18,3 +18,11 @@ for file in json_list:
     jd = json.load(jfile)
     jfile.close()
     file_to_title_dict[file[:-5]] = jd['biblio']['Title of Work']
+
+tsfile = open('data/treatise_structure_dict.json', 'r')
+tsdict = json.load(tsfile)
+
+awprev_df = pd.read_csv('data/awpreverse.csv', index_col=0)
+awcrev_df = pd.read_csv('data/awcreverse.csv', index_col=0)
+swprev_df = pd.read_csv('data/swpreverse.csv', index_col=0)
+swcrev_df = pd.read_csv('data/swcreverse.csv', index_col=0)

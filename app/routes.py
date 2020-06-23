@@ -10,7 +10,7 @@ from functions_and_classes.comparisons import generateCompData
 from functions_and_classes.display_only_ops import generateListOfCites
 from functions_and_classes.lit_level_operations import locationFrequency
 
-bookdict={'0':'Introduction', '1':'Book I', '2':'Book II', '3':'Book III', 'Abs':'The Abstract', 'App':'The Appendix'}
+bookdict={'0':'Introduction', '1':'Book I', '2':'Book II', '3':'Book III', 'Abs':'Abstract', 'App':'Appendix'}
 
 
 @app.route('/')

@@ -2,6 +2,7 @@ from app import app, db, basedir
 from flask import render_template, url_for, redirect, flash
 from app.models import Paper, Citation, p_to_dict, p_from_dict, c_to_dict, c_from_dict
 from google.cloud import firestore
+from google.cloud import storage
 import pandas as pd
 import json
 from functions_and_classes.comparisons import article_comps as ac

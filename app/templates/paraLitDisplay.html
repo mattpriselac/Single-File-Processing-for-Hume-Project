@@ -33,8 +33,8 @@
             <tbody>
               {% for pair in sp_list %}
               <tr class='table-light'>
-                <td> {{ pair[0] }}</td>
-                <td> {{ pair[1] }}</td>
+                <td><a class='link' href='{{ url_for("publication", identifier=pair[0])}}'>{{ pair[1] }}</a></td>
+                <td> {{ pair[2] }}</td>
               </tr>
               {% endfor %}
             </tbody>
@@ -63,8 +63,8 @@
             <tbody>
               {% for pair in ap_list %}
               <tr class='table-light'>
-                <td> {{ pair[0] }}</td>
-                <td> {{ pair[1] }}</td>
+                <td><a class='link' href='{{ url_for("publication", identifier=pair[0])}}'>{{ pair[1] }}</a></td>
+                <td> {{ pair[2] }}</td>
               </tr>
               {% endfor %}
             </tbody>

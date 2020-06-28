@@ -83,6 +83,6 @@ def locationFrequency(location, df):
     out_list = []
 
     for article in csloc_series.index:
-        out_list.append((file_to_title_dict[article], round(csloc_series.loc[article],3)))
+        out_list.append((article, file_to_title_dict[article], round(csloc_series.loc[article],3)))
 
     return out_list

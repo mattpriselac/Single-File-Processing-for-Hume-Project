@@ -10,10 +10,6 @@ from functions_and_classes.comparisons import generateCompData
 from functions_and_classes.display_only_ops import generateListOfCites, df_cns
 from functions_and_classes.lit_level_operations import locationFrequency
 from app.forms import readingListForm
-
-
-
-
 bookdict={'0':'Introduction', '1':'Book I', '2':'Book II', '3':'Book III', 'Abs':'Abstract', 'App':'Appendix'}
 
 

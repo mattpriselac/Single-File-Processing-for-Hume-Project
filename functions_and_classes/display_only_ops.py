@@ -39,3 +39,9 @@ def generateListOfCites(filename, a_s="a", c_p="c", w_l="w"):
         pair = (scdf.iloc[i]['Location'], round(scdf.iloc[i]['Count'],3))
         out_list.append(pair)
     return out_list
+
+
+def df_cns(df_in,n_many_return=25):
+    n = min(n_many_return, int(df_in.count()))
+    zfilter = df_in['Score'] > 1
+    return df_in[zfilter].sort_values('Score', ascending=False)[:n]

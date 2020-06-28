@@ -5,10 +5,14 @@ from google.cloud import firestore
 import pandas as pd
 import json
 from functions_and_classes.comparisons import article_comps as ac
-from data import file_to_title_dict, tsdict, awprev_df, awcrev_df, swprev_df, swcrev_df
+from data import file_to_title_dict, tsdict, awprev_df, awcrev_df, swprev_df, swcrev_df, l_a_w_p, l_a_w_c, l_s_w_p, l_s_w_c
 from functions_and_classes.comparisons import generateCompData
-from functions_and_classes.display_only_ops import generateListOfCites
+from functions_and_classes.display_only_ops import generateListOfCites, df_cns
 from functions_and_classes.lit_level_operations import locationFrequency
+from app.forms import readingListForm
+
+
+
 
 bookdict={'0':'Introduction', '1':'Book I', '2':'Book II', '3':'Book III', 'Abs':'Abstract', 'App':'Appendix'}
 
@@ -140,9 +144,46 @@ def publication(identifier):
         except:
             return render_template('no_such_file.html', title="Whoops!", filename=identifier)
 
-@app.route('/literature')
+@app.route('/literature', methods=['GET','POST'])
 def literature():
-    return render_template('literature.html', title="Overview of the Personal Identity Literature")
+
+
+    citeList = []
+    readlist = df_cns(l_s_w_c,10)
+    for loc in readlist.index:
+        citeList.append((loc, round(readlist['Score'][loc],3)))
+
+    form = readingListForm()
+    if form.validate_on_submit():
+        srch = form.searchSelect.data
+        loca = form.locationSelect.data
+        nums = form.numberLocations.data
+        return redirect(url_for('reading_list', search=srch, location=loca, number_return=nums))
+
+    return render_template('literature.html', title="Overview of the Personal Identity Literature", citeList=citeList, form=form)
+
+
+@app.route('/literature/<search>/<location>/<number_return>')
+def reading_list(search,location,number_return):
+    if search == 'strict':
+        if location == 'chapter':
+            dataf = l_s_w_c
+        elif location == 'paragraph':
+            dataf = l_s_w_p
+
+    if search == 'aggressive':
+        if location == 'chapter':
+            dataf = l_a_w_c
+        elif location == 'paragraph':
+            dataf = l_a_w_p
+
+    cite_list = []
+    readlist = df_cns(dataf,int(number_return))
+    for loc in readlist.index:
+        cite_list.append((loc, round(readlist['Score'][loc],3)))
+
+    return render_template('reading_list.html', title='Reading List on Peronal Identity', cite_list=cite_list, search=search, location=location, number_return=number_return)
+
 
 @app.route('/project')
 def project():

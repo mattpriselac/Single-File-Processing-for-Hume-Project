@@ -26,3 +26,8 @@ awprev_df = pd.read_csv('data/awpreverse.csv', index_col=0)
 awcrev_df = pd.read_csv('data/awcreverse.csv', index_col=0)
 swprev_df = pd.read_csv('data/swpreverse.csv', index_col=0)
 swcrev_df = pd.read_csv('data/swcreverse.csv', index_col=0)
+
+l_a_w_p = pd.read_csv('data/csvs/lit_a_w_p.csv', index_col=0)
+l_a_w_c = pd.read_csv('data/csvs/lit_a_w_c.csv', index_col=0)
+l_s_w_p = pd.read_csv('data/csvs/lit_s_w_p.csv', index_col=0)
+l_s_w_c = pd.read_csv('data/csvs/lit_s_w_c.csv', index_col=0)

@@ -9,7 +9,7 @@ from functions_and_classes.treatise_reference_data import treatise_paragraph_lis
 from functions_and_classes.paper_processing import process_and_score_paper as psp
 from functions_and_classes.paper_processing import chapterScores, relativeScoreCalc
 from functions_and_classes.paper_io import p_from_dict, p_to_dict, c_from_dict, c_to_dict
-from data import file_to_title_dict
+from data.file_to_title_dict import file_to_title_dict
 #generate lit level scores for all 8 kinds by reading from stored JSON data
 def lit_scores_from_jsons():
     #create the list of paragraphs to serve as the score sheet

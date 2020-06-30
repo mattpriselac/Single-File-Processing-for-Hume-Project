@@ -153,17 +153,17 @@ def paperScoreSetter(paper_obj):
 
     print('finished setting scores for', paper_obj.name)
 
-def biblioGenerator(filename, data_frame):
-    filename_filter = data_frame['Filename'].str.contains(filename)
+def biblioGenerator(base_file_name, data_frame):
+    filename_filter = data_frame['Filename'].str.contains(base_file_name)
     df_row = data_frame[filename_filter]
     do = {}
     do['Author'] = df_row['Author'].values[0]
     do['Title of Work'] = df_row['Title of Work'].values[0]
     do['Journal'] = df_row['Journal'].values[0]
-    do['Volume'] = df_row['Volume'].values[0]
-    do['Issue'] = df_row['Issue'].values[0]
-    do['Pages'] = df_row['Pages'].values[0]
-    do['Year'] = df_row['Year'].values[0]
+    do['Volume'] = str(df_row['Volume'].values[0])
+    do['Issue'] = str(df_row['Issue'].values[0])
+    do['Pages'] = str(df_row['Pages'].values[0])
+    do['Year'] = str(df_row['Year'].values[0])
     do['Book Title'] = df_row['Book Title'].values[0]
 
     return do

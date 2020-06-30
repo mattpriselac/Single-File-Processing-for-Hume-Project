@@ -3,7 +3,7 @@ import json
 from data import csv_dir, json_dir
 from data.csvs import csv_list
 from data.jsons import json_list
-from data import a_l_p_comp, a_l_c_comp, s_l_p_comp, s_l_c_comp, file_to_title_dict
+from data.file_to_title_dict import file_to_title_dict
 #This file has two categories of thigns worth importing for usage:
 #first is a function for generating comparisons:
 #article_comps(filename, min_num_cites=1, min_num_comps=100, a_or_s="a", p_or_c="p")
@@ -122,82 +122,14 @@ def updateALCcomps():
     a_l_c_comps.to_csv('data/a_l_c_comp.csv')
     print('Done updating a_l_c_comp.csv')
 
-
+def updateCompData():
+    updateALCcomps()
+    print('done updating Aggresive Chapter Comp data')
+    updateSLCcomps()
+    print('done updating Strict Chapter Comp data')
+    updateALPcomps()
+    print('done updating Aggressive Paragraph Comp data')
+    updateSLPcomps()
+    print('done updating Strict Paragraph Comp data')
+    print('done updating all data')
 #now that we've finished the functions for generating and saving data I'll add functions for generating comparative data for an individual article
-
-def n_agg_filter(df_in, num):
-    return df_in['totalAggressiveCites'] > num
-
-def m_agg_similar(filename, min_cites, min_similar, df_in):
-    min_cit = max(0,min_cites)
-    min_c = n_agg_filter(df_in, min_cit)
-    min_si = min(min_similar,len(df_in[min_c].index)-1)
-    sim_score_to_beat = 1.05 * df_in[min_c].sort_values(filename)[min_si:min_si+1][filename].values[0]
-    score_to_beat_filter = df_in[min_c][filename] <= sim_score_to_beat
-
-    return df_in[min_c][score_to_beat_filter].sort_values(filename)
-
-def a_l_c_comp_process(file, minimum_comp_cites, minimum_sim_comps):
-    df = pd.merge(a_l_c_comp[file], a_l_c_comp['totalAggressiveCites'], left_index=True, right_index=True)
-    return m_agg_similar(file, minimum_comp_cites, minimum_sim_comps, df)[1:]
-
-def a_l_p_comp_process(file, minimum_comp_cites, minimum_sim_comps):
-    df = pd.merge(a_l_p_comp[file], a_l_p_comp['totalAggressiveCites'], left_index=True, right_index=True)
-    return m_agg_similar(file, minimum_comp_cites, minimum_sim_comps, df)[1:]
-
-def n_strict_filter(df_in, num):
-    return df_in['totalStrictCites'] > num
-
-def m_strict_similar(filename, min_cites, min_similar, df_in):
-    min_cit = max(0,min_cites)
-    min_c = n_strict_filter(df_in, min_cit)
-    min_si = min(min_similar,len(df_in[min_c].index)-1)
-    sim_score_to_beat = 1.05 * df_in[min_c].sort_values(filename)[min_si:min_si+1][filename].values[0]
-    score_to_beat_filter = df_in[min_c][filename] <= sim_score_to_beat
-
-    return df_in[min_c][score_to_beat_filter].sort_values(filename)
-
-def s_l_c_comp_process(file, minimum_comp_cites, minimum_sim_comps):
-    df = pd.merge(s_l_c_comp[file], s_l_c_comp['totalStrictCites'], left_index=True, right_index=True)
-    return m_strict_similar(file, minimum_comp_cites, minimum_sim_comps, df)[1:]
-
-def s_l_p_comp_process(file, minimum_comp_cites, minimum_sim_comps):
-    df = pd.merge(s_l_p_comp[file], s_l_p_comp['totalStrictCites'], left_index=True, right_index=True)
-    return m_strict_similar(file, minimum_comp_cites, minimum_sim_comps, df)[1:]
-
-#this is in the end all that needs to be imported from this file to generate the comparative data for an individaul file, along with the a_l_p_comp etc dfs from data
-def article_comps(filename, min_num_cites=1, min_num_comps=100, a_or_s="a", p_or_c="p"):
-    if a_or_s == "a":
-        if p_or_c == "p":
-            return a_l_p_comp_process(filename, minimum_comp_cites=min_num_cites, minimum_sim_comps=min_num_comps)
-        elif p_or_c == "c":
-            return a_l_c_comp_process(filename, minimum_comp_cites=min_num_cites, minimum_sim_comps=min_num_comps)
-        else:
-            return print('be sure to choose "p" or "c" for the p_or_c argument')
-    elif a_or_s == "s":
-        if p_or_c == "p":
-            return s_l_p_comp_process(filename, minimum_comp_cites=min_num_cites, minimum_sim_comps=min_num_comps)
-        elif p_or_c == "c":
-            return s_l_c_comp_process(filename, minimum_comp_cites=min_num_cites, minimum_sim_comps=min_num_comps)
-        else:
-            return print('be sure to choose "p" or "c" for the p_or_c argument')
-    else:
-        return print('be sure to choose "a" or "s" for the a_or_s argument')
-
-def generateCompData(df_in,filename):
-    count = df_in[filename].count()
-    out_list = []
-    for i in range(0,count):
-        file_comp_info = {}
-        file_comp_info['rank'] = i+1
-        file_comp_info['score'] = round(df_in.iloc[i][filename],3)
-        if df_in.iloc[i].name.strip() == "Literature":
-            file_comp_info['file'] = "Literature"
-            file_comp_info['title'] = "Literature"
-            file_comp_info['cites'] = df_in.iloc[i][df_in.columns[1]]
-        else:
-            file_comp_info['file'] = df_in.iloc[i].name.strip()
-            file_comp_info['title'] = file_to_title_dict[df_in.iloc[i].name.strip()]
-            file_comp_info['cites'] = int(df_in.iloc[i][df_in.columns[1]])
-        out_list.append(file_comp_info)
-    return out_list

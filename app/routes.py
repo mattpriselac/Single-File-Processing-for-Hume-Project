@@ -5,10 +5,12 @@ from google.cloud import firestore
 from google.cloud import storage
 import pandas as pd
 import json
-from functions_and_classes.comparisons import article_comps as ac
-from data import file_to_title_dict, tsdict, awprev_df, awcrev_df, swprev_df, swcrev_df, l_a_w_p, l_a_w_c, l_s_w_p, l_s_w_c
-from functions_and_classes.comparisons import generateCompData
-from functions_and_classes.display_only_ops import generateListOfCites, df_cns
+from functions_and_classes.display_only_ops import article_comps as ac
+from data import tsdict
+from data.file_to_title_dict import file_to_title_dict
+from data.reverse_loc_to_pubs import awprev_df, awcrev_df, swprev_df, swcrev_df
+from data.lit_level_data import l_a_w_p, l_a_w_c, l_s_w_p, l_s_w_c
+from functions_and_classes.display_only_ops import generateListOfCites, df_cns, generateCompData
 from functions_and_classes.lit_level_operations import locationFrequency
 from app.forms import readingListForm
 bookdict={'0':'Introduction', '1':'Book I', '2':'Book II', '3':'Book III', 'Abs':'Abstract', 'App':'Appendix'}

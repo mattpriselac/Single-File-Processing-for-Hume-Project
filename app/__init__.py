@@ -9,5 +9,6 @@ app.config.from_object(Config)
 db = firestore.Client()
 
 from app import routes, models
-from data import a_l_c_comp, s_l_c_comp, a_l_p_comp, s_l_p_comp
-from functions_and_classes.comparisons import article_comps as ac
+
+from data.comparison_data import a_l_c_comp, s_l_c_comp, a_l_p_comp, s_l_p_comp
+from functions_and_classes.display_only_ops import article_comps as ac

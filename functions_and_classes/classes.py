@@ -6,7 +6,7 @@ from functions_and_classes.treatise_reference_data import *
 
 class Paper:
     def __init__(self, txt_file_name):
-        self.name = txt_file_name
+        self.name = txt_file_name[:-4]
         self.nortonCites = []
         self.sbnCites = []
         self.rawParenthesesCapture = []

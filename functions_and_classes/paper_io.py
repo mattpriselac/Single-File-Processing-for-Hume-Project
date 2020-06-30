@@ -53,7 +53,8 @@ def c_to_dict(cite):
     return od
 
 def p_from_dict(in_dict):
-    paper = Paper(in_dict['name'])
+    #this is '.txt' is just so the naming stays correct
+    paper = Paper(in_dict['name']+'.txt')
     for cite in in_dict['nortonCites']:
         paper.nortonCites.append(c_from_dict(cite))
     for cite in in_dict['sbnCites']:

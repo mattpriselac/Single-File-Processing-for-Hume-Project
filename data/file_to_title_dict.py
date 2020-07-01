@@ -1,9 +1,6 @@
-import json
-from data.jsons import json_list
+from functions_and_classes.cloud_io import dic_from_gc_json
 
-file_to_title_dict = {}
-for file in json_list:
-    jfile = open('data/jsons/'+file, 'r')
-    jd = json.load(jfile)
-    jfile.close()
-    file_to_title_dict[file[:-5]] = jd['biblio']['Title of Work']
+file_to_title_dict = dic_from_gc_json('file_to_title_dict.json')
+file_list = []
+for file in file_to_title_dict.keys():
+    file_list.append(file)

@@ -1,4 +1,5 @@
 runtime: python37
 
-env_varialbes:
+env_variables:
   SECRET_KEY: 'adskgj*%$%SDFBbldav1879dhbdfh6'
+  CLOUD_STORAGE_BUCKET: 'treatise-mapping-project.appspot.com'

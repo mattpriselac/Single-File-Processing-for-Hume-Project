@@ -1,15 +1,15 @@
 import os
 import json
 import csv
-from data import json_dir
 import pandas as pd
-from data.jsons import json_list
-from data.txts import txt_list
+from io import StringIO
 from functions_and_classes.treatise_reference_data import treatise_paragraph_list
 from functions_and_classes.paper_processing import process_and_score_paper as psp
 from functions_and_classes.paper_processing import chapterScores, relativeScoreCalc
 from functions_and_classes.paper_io import p_from_dict, p_to_dict, c_from_dict, c_to_dict
-from data.file_to_title_dict import file_to_title_dict
+from functions_and_classes.cloud_io import p_dict_from_fire
+from data.file_to_title_dict import file_to_title_dict, file_list
+from google.cloud import storage
 #generate lit level scores for all 8 kinds by reading from stored JSON data
 def lit_scores_from_jsons():
     #create the list of paragraphs to serve as the score sheet
@@ -23,21 +23,20 @@ def lit_scores_from_jsons():
         master_agg_para_list[para] = 0
     #create the list of chapter to serve as the c
 
-    for jfn in json_list:
-        jfile = open(json_dir+jfn, 'r')
-        jd = json.load(jfile)
+    for filer in file_list:
+        jd = p_dict_from_fire(filer)
         paper = p_from_dict(jd)
-        jfile.close()
+        paper.name = jd['name']
 
         for para in master_strict_para_list.keys():
                 master_strict_para_list[para] += paper.s_w_p[para]
         if paper.totalStrictCites < 1:
-                print(jfn[:-5], 'has no strict cites')
+                print(paper.name, 'has no strict cites')
 
         for para in master_agg_para_list.keys():
                 master_agg_para_list[para] += paper.a_w_p[para]
         if paper.totalAggressiveCites < 1:
-                print(jfn[:-5], 'has no aggressive cites')
+                print(paper.name, 'has no aggressive cites')
 
     lit_s_w_c = chapterScores(master_strict_para_list)
     lit_a_w_c = chapterScores(master_agg_para_list)
@@ -50,29 +49,39 @@ def lit_scores_from_jsons():
 
     return od
 
-def pd_to_csv(dictionary, filename):
-    file = open('data/csvs/'+filename+'.csv', 'w')
-    csv_writer = csv.writer(file)
-    csv_writer.writerow(('Paragraph','Score'))
-    for item in dictionary.items():
-        csv_writer.writerow(item)
-    file.close()
+def write_lit_chap_dict_to_gc_csv(din, file_name):
+    sio = StringIO()
+    wtr = csv.writer(sio)
+    wtr.writerow(('Chapter', 'Score'))
+    for chap in din.keys():
+        wtr.writerow((chap, din[chap]))
+    sc = storage.Client()
+    bkt = sc.bucket('treatise-mapping-project.appspot.com')
+    blob = bkt.blob(file_name+'.csv')
+    blob.upload_from_string(sio.getvalue())
+    sio.close()
+    print('done uploading', file_name)
 
-def cd_to_csv(dictionary, filename):
-    file = open('data/csvs/'+filename+'.csv', 'w')
-    csv_writer = csv.writer(file)
-    csv_writer.writerow(('Chapter','Score'))
-    for item in dictionary.items():
-        csv_writer.writerow(item)
-    file.close()
+def write_lit_para_dict_to_gc_csv(din, file_name):
+    sio = StringIO()
+    wtr = csv.writer(sio)
+    wtr.writerow(('Paragraph', 'Score'))
+    for para in din.keys():
+        wtr.writerow((para, din[para]))
+    sc = storage.Client()
+    bkt = sc.bucket('treatise-mapping-project.appspot.com')
+    blob = bkt.blob(file_name+'.csv')
+    blob.upload_from_string(sio.getvalue())
+    sio.close()
+    print('done uploading', file_name)
 
 def lit_to_csv(dict_of_dicts):
     for dname in dict_of_dicts.keys():
         if 'p' in dname:
-            pd_to_csv(dict_of_dicts[dname], dname)
+            write_lit_para_dict_to_gc_csv(dict_of_dicts[dname], dname)
             print('generated csv for', dname)
         elif 'c' in dname:
-            cd_to_csv(dict_of_dicts[dname], dname)
+            write_lit_chap_dict_to_gc_csv(dict_of_dicts[dname], dname)
             print('generated csv for', dname)
 
 def locationFrequency(location, df):

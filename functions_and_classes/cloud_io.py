@@ -1,5 +1,6 @@
 from google.cloud import firestore
 from google.cloud import storage
+from app import firedb
 import pandas as pd
 import json
 from io import StringIO, BytesIO
@@ -12,7 +13,7 @@ def df_from_gc_csv(csv_name):
     sc = storage.Client()
     bkt = sc.bucket('treatise-mapping-project.appspot.com')
     blob = bkt.blob(csv_name)
-    dl_data = io.BytesIO(blob.download_as_string())
+    dl_data = BytesIO(blob.download_as_string())
     df = pd.read_csv(dl_data, index_col=0)
 
     return df
@@ -22,7 +23,7 @@ def dic_from_gc_json(json_name):
     sc = storage.Client()
     bkt = sc.bucket('treatise-mapping-project.appspot.com')
     blob = bkt.blob(json_name)
-    dl_data = io.BytesIO(blob.download_as_string())
+    dl_data = BytesIO(blob.download_as_string())
     do = json.load(dl_data)
 
     return do
@@ -52,10 +53,11 @@ def upload_to_gc(file_name, file_path):
 #data frame in and outputs a csv to the cloud with the file_name. The second takes a dictionary in
 #and outputs a json to the cloud with the file_name.
 def upload_csv_from_df(file_name, df):
+    #this doesn't seem to work as well as the basic upload_to_gc as above
     sc = storage.Client()
     bkt = sc.bucket('treatise-mapping-project.appspot.com')
     blob = bkt.blob(file_name)
-    file_obj = io.StringIO(df.to_csv())
+    file_obj = StringIO(df.to_csv())
     blob.upload_from_file(file_obj)
     print(file_name, 'uploaded!')
 
@@ -64,9 +66,18 @@ def upload_json_from_dict(file_name, dic_in):
     sc = storage.Client()
     bkt = sc.bucket('treatise-mapping-project.appspot.com')
     blob = bkt.blob(file_name)
-    file_obj = io.StringIO(json.dumps(dic_in))
+    file_obj = StringIO(json.dumps(dic_in))
     blob.upload_from_file(file_obj)
     print(file_name, 'uploaded!')
+
+def updateFileToTitleDict():
+    #just run this function to update alongside the other updates to static files
+    file_to_title_dict = {}
+    for pub in firedb.collection('publications').stream():
+        basedict = firedb.collection('publications').document(pub.id).get().to_dict()
+        file_to_title_dict[basedict['name']] = basedict['biblio']['Title of Work']
+    upload_json_from_dict('file_to_title_dict.json', file_to_title_dict)
+
 
 
 ##From here down we have Functions for firestore database connections for paper objects:

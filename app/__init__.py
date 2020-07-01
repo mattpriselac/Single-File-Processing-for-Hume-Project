@@ -6,7 +6,8 @@ from google.cloud import storage
 
 app = Flask(__name__)
 app.config.from_object(Config)
-db = firestore.Client()
+firedb = firestore.Client()
+db = storage.Client()
 
 from app import routes, models
 

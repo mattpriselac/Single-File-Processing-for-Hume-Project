@@ -3,37 +3,45 @@ import pandas as pd
 from functions_and_classes.classes import *
 from data.comparison_data import a_l_p_comp, a_l_c_comp, s_l_p_comp, s_l_c_comp
 from data.file_to_title_dict import file_to_title_dict
+from google.cloud import firestore
 #note: When I do this with Firestore, I think the easier way to do this will be to go through the paper object to access
 #the relevant score sheet dictionary as it's saved there and load the dictionary and then load teh data frame from
 #the dictinoary direclty.
 
 #I'll want to change this to pull from database directly papername-scores-document(a_l_c).get().to_dict(), and then turn that into the dataframe instead of the csv.
 def generateListOfCites(filename, a_s="a", c_p="c", w_l="w"):
-    basedir = ""
-    basepath = basedir+"data/csvs/"+filename
+    base_ref = firestore.Client().collection('publications').document(filename).collection('scores')
     if a_s == "a":
         if c_p == "c":
             if w_l == "w":
-                path = basepath+"-a-w-c.csv"
+                doc_ref = base_ref.document('a_w_c')
             elif w_l == 'l':
-                path = basepath+'-a-l-c.csv'
+                doc_ref = base_ref.document('a_l_c')
         elif c_p == 'p':
             if w_l == "w":
-                path = basepath+"-a-w-p.csv"
+                doc_ref = base_ref.document('a_w_p')
             elif w_l == 'l':
-                path = basepath+'-a-l-p.csv'
+                doc_ref = base_ref.document('a_l_p')
     elif a_s == "s":
         if c_p == "c":
             if w_l == "w":
-                path = basepath+"-s-w-c.csv"
+                doc_ref = base_ref.document('s_w_c')
             elif w_l == 'l':
-                path = basepath+'-s-l-c.csv'
+                doc_ref = base_ref.document('s_l_c')
         elif c_p == 'p':
             if w_l == "w":
-                path = basepath+"-s-w-p.csv"
+                doc_ref = base_ref.document('s_w_p')
             elif w_l == 'l':
-                path = basepath+'-s-l-p.csv'
-    df = pd.read_csv(path, names=['Location', 'Count'])
+                doc_ref = base_ref.document('s_l_p')
+                ###NEED TO FIGURE OUT HOW TO GO FROM THIS DICT TO SAME DF with INDEX
+    doc_dict = doc_ref.get().to_dict()
+    dlistpairs = []
+    for pair in doc_dict.items():
+        key = pair[0]
+        value = pair[1]
+        lp = [key, value]
+        dlistpairs.append(lp)
+    df = pd.DataFrame(dlistpairs,  columns=['Location', 'Count'])
     nz = df['Count'] > 0
     scdf = df[nz].sort_values('Count', ascending=False)
     entries = scdf['Location'].count()

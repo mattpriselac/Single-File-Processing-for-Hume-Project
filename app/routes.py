@@ -117,29 +117,29 @@ def publications():
 @app.route('/publication/<identifier>')
 def publication(identifier):
     if identifier == "Literature":
-        return redirect('literature')
+        return redirect(url_for('literature'))
     else:
-        #try:
-        pub = p_dict_from_fire(identifier)
-        ppurl="https://philpapers.org/rec/"+identifier
-        df_sc = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='s')
-        sc_data = generateCompData(df_sc, identifier)
-        df_sp = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='s')
-        sp_data = generateCompData(df_sp, identifier)
-        df_ac = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='a')
-        ac_data = generateCompData(df_ac, identifier)
-        df_ap = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='a')
-        ap_data = generateCompData(df_ap, identifier)
+        try:
+            pub = p_dict_from_fire(identifier)
+            ppurl="https://philpapers.org/rec/"+identifier
+            df_sc = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='s')
+            sc_data = generateCompData(df_sc, identifier)
+            df_sp = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='s')
+            sp_data = generateCompData(df_sp, identifier)
+            df_ac = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='c', a_or_s='a')
+            ac_data = generateCompData(df_ac, identifier)
+            df_ap = ac(identifier, min_num_cites=10, min_num_comps=10, p_or_c='p', a_or_s='a')
+            ap_data = generateCompData(df_ap, identifier)
 
-        swp = generateListOfCites(identifier, a_s="s", c_p="p")
-        swc = generateListOfCites(identifier, a_s="s", c_p="c")
-        awp = generateListOfCites(identifier, a_s="a", c_p="p")
-        awc = generateListOfCites(identifier, a_s="a", c_p="c")
+            swp = generateListOfCites(identifier, a_s="s", c_p="p")
+            swc = generateListOfCites(identifier, a_s="s", c_p="c")
+            awp = generateListOfCites(identifier, a_s="a", c_p="p")
+            awc = generateListOfCites(identifier, a_s="a", c_p="c")
 
-        return render_template('publication.html', pub=pub, title=pub['name'], ppurl=ppurl, sc=sc_data, sp=sp_data, ac=ac_data, ap=ap_data, swp=swp, swc=swc, awp=awp, awc=awc)
+            return render_template('publication.html', pub=pub, title=pub['name'], ppurl=ppurl, sc=sc_data, sp=sp_data, ac=ac_data, ap=ap_data, swp=swp, swc=swc, awp=awp, awc=awc)
 
-        #except:
-            #return render_template('no_such_file.html', title="Whoops!", filename=identifier)
+        except:
+            return render_template('no_such_file.html', title="Whoops!", filename=identifier)
 
 @app.route('/literature', methods=['GET','POST'])
 def literature():
